@@ -29,26 +29,27 @@ public class AccountController : Controller
 
 
     [HttpPost]
-    public async Task<IActionResult> Register(RegisterViewModel model, IFormFile file)
+    public async Task<IActionResult> Register(RegisterViewModel model, IFormFile? file)
     {
         if (ModelState.IsValid)
         {
-            string? relativePath = null;
-            string uploadedFileName = Path.Combine(_env.WebRootPath, "images/avatars");
-            if (!Directory.Exists(uploadedFileName))
+            string? relativePath = "/images/avatars/default.png";
+
+            if (file != null && file.Length > 0)
             {
-                Directory.CreateDirectory(uploadedFileName);
+                string folder = Path.Combine(_env.WebRootPath, "images", "avatars");
+                Directory.CreateDirectory(folder);
+                
+                string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                string savepath = Path.Combine(folder, fileName);
+                using (var stream = new FileStream(savepath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            relativePath = Path.Combine($"images/avatars/{fileName}");
             }
-
-            string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-
-            string filesavePath = Path.Combine(uploadedFileName, fileName);
-            using (var stream = new FileStream(filesavePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            relativePath = Path.Combine("images/avatars", fileName.Replace("\\", "/"));
+            
+            
 
             string roleName = model.RoleId == 2 ? "User" : "Employer";
             MyUser user = new MyUser
@@ -58,6 +59,10 @@ public class AccountController : Controller
                 AvatarUrl = relativePath,
                 PhoneNumber = model.PhoneNumber,
             };
+            if (user.AvatarUrl == null)
+            {
+                user.AvatarUrl = "/images/avatars/default.png";
+            }
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {

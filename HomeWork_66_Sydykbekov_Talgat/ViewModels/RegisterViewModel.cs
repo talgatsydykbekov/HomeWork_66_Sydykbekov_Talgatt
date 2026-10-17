@@ -7,7 +7,7 @@ public class RegisterViewModel
     [Required] public string NicknameOrNameCompany { get; set; }
     [Required] public string Email { get; set; }
     [Required][Range(2,3)]public int RoleId { get; set; }
-    public string? AvatarUrl { get; set; }
+    
     
     [Required]
     [DataType(DataType.Password)]
