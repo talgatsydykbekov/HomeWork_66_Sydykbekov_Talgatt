@@ -26,8 +26,8 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label asp-for="NicknameOrNameCompany" class="form-label">Имя пользователя</label>
-                            <input asp-for="NicknameOrNameCompany" class="form-control" />
+                            <label id="nameLabel" asp-for="NicknameOrNameCompany" class="form-label">Имя пользователя</label>
+                            <input id="nameInput" asp-for="NicknameOrNameCompany" class="form-control" />
                             <span asp-validation-for="NicknameOrNameCompany" class="text-danger"></span>
                         </div>
 
@@ -75,6 +75,18 @@
     $(document).ready(function(){
         $('input[type="tel"]').inputmask("+996 (999) 99-99-99");
     });
+    
+    $(function () {
+        function updateLabel() {
+            const isEmployer = $("#RoleId").val() === "3";
+            
+            $("#nameLabel").text(
+                isEmployer ? "Название компании" : "Имя пользователя"
+            );
+        }
+        $("#RoleId").on("change", updateLabel);
+        updateLabel();
+    })
 </script>
 @{
     await Html.RenderPartialAsync("_ValidationScriptsPartial");
