@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HomeWork_66_Sydykbekov_Talgat")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ddaae35807288941258f7d8cb7903bfe622a9747")]
 [assembly: System.Reflection.AssemblyProductAttribute("HomeWork_66_Sydykbekov_Talgat")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HomeWork_66_Sydykbekov_Talgat")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
