@@ -1,8 +1,13 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
+    @if (User.IsInRole("Admin") && User.Identity.IsAuthenticated)
+    {
+        <a asp-controller="Category" asp-action="Create" class="btn btn-primary">Создать категорию</a>
+    }
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

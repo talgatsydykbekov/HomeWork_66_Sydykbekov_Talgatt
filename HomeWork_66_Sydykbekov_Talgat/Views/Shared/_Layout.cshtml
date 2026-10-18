@@ -3,8 +3,6 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - HomeWork_66_Sydykbekov_Talgat</title>
-    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/HomeWork_66_Sydykbekov_Talgat.styles.css" asp-append-version="true"/>
@@ -28,9 +26,23 @@
                     </li>
                 </ul>
             </div>
-            <div>
-                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary btn-sm">Войти</a>
-                <a asp-controller="Account" asp-action="Register" class="btn btn-outline-success btn-sm">Регистрация</a>
+            <div class="d-flex align-items-center gap-3">
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    @*<a asp-controller="User" asp-action="Index" class="d-flex align-items-center">
+                        <img src="images/Profile/people.png" alt="Мой профиль" class="rounded-circle" width="40" height="40">
+                    </a>*@
+
+                    <form method="post" asp-controller="Account" asp-action="LogOff" class="d-inline">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Выйти</button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary btn-sm">Войти</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-success btn-sm">Регистрация</a>
+                }
             </div>
         </div>
     </nav>
@@ -43,8 +55,8 @@
 
 <footer class="border-top footer text-muted">
     <div class="container">
-        &copy; 2026 - HomeWork_66_Sydykbekov_Talgat - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
+
+        </div>
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
