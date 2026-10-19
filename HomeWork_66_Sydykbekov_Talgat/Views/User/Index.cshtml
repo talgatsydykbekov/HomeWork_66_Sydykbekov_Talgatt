@@ -9,7 +9,14 @@
 <p>Имя: @Model.UserName</p>
 <p>Email: @Model.Email</p>
 <p>Телефон: @Model.PhoneNumber</p>
-
+@if (User.IsInRole("User"))
+{
+    <a asp-controller="Resume"
+       asp-action="Create"
+       class="btn btn-primary">
+        Создать резюме
+    </a>
+}
 <button type="button"
         class="btn btn-primary"
         data-bs-toggle="modal"

@@ -144,7 +144,7 @@ namespace HomeWork_66_Sydykbekov_Talgat.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Resume");
+                    b.ToTable("Resumes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
