@@ -1,0 +1,90 @@
+﻿@model MyUser
+
+@{
+    Layout = "_Layout";
+}
+
+<h2>Мой профиль</h2>
+
+<p>Имя: @Model.UserName</p>
+<p>Email: @Model.Email</p>
+<p>Телефон: @Model.PhoneNumber</p>
+
+<button type="button"
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#editProfileModal">
+    Редактировать
+</button>
+
+<div class="modal fade"
+     id="editProfileModal"
+     tabindex="-1"
+     aria-labelledby="editProfileTitle"
+     aria-hidden="true">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileTitle">
+                    Редактирование профиля
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Закрыть">
+                </button>
+            </div>
+
+            <form asp-controller="User"
+                  asp-action="Edit"
+                  method="post">
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="userName" class="form-label">Имя</label>
+                        <input id="userName"
+                               name="UserName"
+                               value="@Model.UserName"
+                               class="form-control"
+                               required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input id="email"
+                               name="Email"
+                               type="email"
+                               value="@Model.Email"
+                               class="form-control"
+                               required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Телефон</label>
+                        <input id="phone"
+                               name="PhoneNumber"
+                               type="tel"
+                               value="@Model.PhoneNumber"
+                               class="form-control" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Отмена
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        Сохранить
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
