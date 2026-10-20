@@ -48,7 +48,12 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h4 class="card-title text-break">
-                        @resume.Title
+                        <a asp-controller="ResumeCatalog"
+                           asp-action="Details"
+                           asp-route-id="@resume.Id"
+                           class="stretched-link">
+                            @resume.Title
+                        </a>
                     </h4>
 
                     <p>

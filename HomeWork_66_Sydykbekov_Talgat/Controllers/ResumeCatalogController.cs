@@ -1,11 +1,12 @@
 ﻿using HomeWork_66_Sydykbekov_Talgat.Models;
 using HomeWork_66_Sydykbekov_Talgat.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeWork_66_Sydykbekov_Talgat.Controllers;
-
+[Authorize(Roles = "Employer")]
 public class ResumeCatalogController : Controller
 {
     private readonly MyUserContext _context;
@@ -68,5 +69,23 @@ public class ResumeCatalogController : Controller
         };
 
         return View(model);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Details(int? id)
+    {
+        var resume = await _context.Resumes
+            .AsNoTracking()
+            .Include(r => r.Category)
+            .Include(r => r.WorkExperiences)
+            .Include(r => r.Educations)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(r => r.Id == id && r.IsPublished);
+
+        if (resume == null)
+        {
+            return NotFound();
+        }
+        return View(resume);
     }
 }
