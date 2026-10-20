@@ -29,6 +29,7 @@ public class AccountController : Controller
 
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterViewModel model, IFormFile? file)
     {
         if (ModelState.IsValid)
@@ -46,7 +47,7 @@ public class AccountController : Controller
                 {
                     await file.CopyToAsync(stream);
                 }
-            relativePath = Path.Combine($"images/avatars/{fileName}");
+                relativePath = $"/images/avatars/{fileName}";
             }
             
             

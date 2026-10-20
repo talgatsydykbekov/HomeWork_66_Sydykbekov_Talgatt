@@ -12,13 +12,15 @@ public class UserController : Controller
 {
     private readonly MyUserContext _context;
     private readonly UserManager<MyUser> _userManager;
+    private readonly IWebHostEnvironment _environment;
 
     public UserController(
         MyUserContext context,
-        UserManager<MyUser> userManager)
+        UserManager<MyUser> userManager,IWebHostEnvironment environment)
     {
         _context = context;
         _userManager = userManager;
+        _environment = environment;
     }
     
     [HttpGet]

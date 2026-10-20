@@ -2,6 +2,10 @@
 
 @{
     ViewData["Title"] = "Мой профиль";
+        var avatarPath = Model.User.AvatarUrl;
+        var avatarUrl = string.IsNullOrWhiteSpace(avatarPath)
+            ? Url.Content("~/images/avatars/default.png")
+            : Url.Content("~/" + avatarPath.TrimStart('/'));
 }
 
 <div class="container mt-4">
@@ -37,6 +41,15 @@
                     data-bs-target="#editProfileModal">
                 Редактировать профиль
             </button>
+        </div>
+        <div>
+
+            <img src="@avatarUrl"
+                 alt="Фотография профиля"
+                 width="160"
+                 height="160"
+                 class="rounded-circle mb-3"
+                 style="object-fit: cover;" />
         </div>
     </div>
     <div>
