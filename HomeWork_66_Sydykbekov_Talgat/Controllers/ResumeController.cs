@@ -197,4 +197,30 @@ public class ResumeController : Controller
             nameof(Details),
             new { id = resume.Id });
     }
+    [Authorize(Roles = "User")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Refresh(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+            return Challenge();
+
+        var resume = await _context.Resumes
+            .FirstOrDefaultAsync(r =>
+                r.Id == id &&
+                r.ApplicantId == user.Id);
+
+        if (resume == null)
+            return NotFound();
+
+        resume.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        TempData["Success"] = "Дата обновления резюме изменена.";
+
+        return RedirectToAction("Index", "User");
+    }
 }
