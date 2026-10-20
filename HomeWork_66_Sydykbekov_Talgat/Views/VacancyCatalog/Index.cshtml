@@ -38,7 +38,15 @@
                     </p>
 
                     <p>
-                        Работодатель: @vacancy.Employer.UserName
+                        Работодатель:
+
+                        <a asp-controller="Company"
+                           asp-action="Details"
+                           asp-route-id="@vacancy.EmployerId"
+                           class="position-relative"
+                           style="z-index: 2;">
+                            @vacancy.Employer.UserName
+                        </a>
                     </p>
 
                     @if (vacancy.PublishedAt.HasValue)

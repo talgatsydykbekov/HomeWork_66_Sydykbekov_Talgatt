@@ -1,0 +1,55 @@
+﻿@model HomeWork_66_Sydykbekov_Talgat.ViewModels.CompanyProfileViewModel
+
+
+
+@{
+    ViewData["Title"] = Model.CompanyName;
+}
+
+<div class="container mt-4">
+    <h2 class="text-break">@Model.CompanyName</h2>
+
+    <h3 class="mt-4">Вакансии компании</h3>
+
+    @if (Model.Vacancies.Count == 0)
+    {
+        <p>У компании пока нет опубликованных вакансий.</p>
+    }
+    else
+    {
+        @foreach (var vacancy in Model.Vacancies)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h4 class="card-title text-break">
+                        <a asp-controller="VacancyCatalog"
+                           asp-action="Details"
+                           asp-route-id="@vacancy.Id"
+                           class="stretched-link">
+                            @vacancy.Title
+                        </a>
+                    </h4>
+
+                    <p>
+                        Зарплата:
+                        @vacancy.Salary.ToString("N2")
+                    </p>
+
+                    @if (vacancy.PublishedAt.HasValue)
+                    {
+                        <p>
+                            Опубликована:
+                            @vacancy.PublishedAt.Value.ToString("dd.MM.yyyy HH:mm") UTC
+                        </p>
+                    }
+                </div>
+            </div>
+        }
+    }
+
+    <a asp-controller="VacancyCatalog"
+       asp-action="Index"
+       class="btn btn-secondary mt-3">
+        Все вакансии
+    </a>
+</div>

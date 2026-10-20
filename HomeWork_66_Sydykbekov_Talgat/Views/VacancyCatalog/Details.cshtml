@@ -14,7 +14,11 @@
             <dl class="row">
                 <dt class="col-sm-4">Работодатель</dt>
                 <dd class="col-sm-8 text-break">
-                    @Model.Employer.UserName
+                    <a asp-controller="Company"
+                       asp-action="Details"
+                       asp-route-id="@Model.EmployerId">
+                        @Model.Employer.UserName
+                    </a>
                 </dd>
 
                 <dt class="col-sm-4">Категория</dt>
