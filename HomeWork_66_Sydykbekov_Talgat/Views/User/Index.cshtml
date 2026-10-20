@@ -146,6 +146,14 @@
                                 </button>
                             </form>
                         </div>
+                        <div>
+                            <a asp-controller="EmployerApplication"
+                               asp-action="Index"
+                               asp-route-vacancyId="@vacancy.Id"
+                               class="btn btn-outline-primary mt-2">
+                                Отклики
+                            </a>
+                        </div>
                     </div>
                 }
             }

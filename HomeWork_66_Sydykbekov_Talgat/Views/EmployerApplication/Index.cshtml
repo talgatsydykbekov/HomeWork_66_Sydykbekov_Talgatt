@@ -1,0 +1,52 @@
+﻿@model HomeWork_66_Sydykbekov_Talgat.ViewModels.VacancyApplicationsViewModel
+
+
+@{
+    ViewData["Title"] = "Отклики на вакансию";
+}
+<div class="container mt-4">
+    <h2>Отклики на вакансию</h2>
+    <h4 class="text-break mb-4">
+        @Model.VacancyTitle
+    </h4>
+    @if (Model.Applications.Count == 0)
+    {
+        <p>На эту вакансию пока нет откликов.</p>
+    }
+    else
+    {
+        @foreach (var application in Model.Applications)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="text-break">
+                        @application.Resume.Title
+                    </h5>
+                    <p>
+                        Соискатель:
+                        @application.Resume.Applicant.UserName
+                    </p>
+                    <p>
+                        Ожидаемая зарплата:
+                        @application.Resume.ExpectedSalary.ToString("N2")
+                    </p>
+                    <p>
+                        Дата отклика:
+                        @application.CratedAt.ToString("dd.MM.yyyy HH:mm") UTC
+                    </p>
+                    <a asp-controller="EmployerApplication"
+                       asp-action="Resume"
+                       asp-route-id="@application.Id"
+                       class="btn btn-primary">
+                        Посмотреть резюме
+                    </a>
+                </div>
+            </div>
+        }
+    }
+    <a asp-controller="User"
+       asp-action="Index"
+       class="btn btn-secondary mt-3">
+        Вернуться в профиль
+    </a>
+</div>
