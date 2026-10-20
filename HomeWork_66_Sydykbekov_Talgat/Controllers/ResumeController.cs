@@ -75,7 +75,7 @@ public class ResumeController : Controller
 
         TempData["Success"] = "Резюме создано.";
 
-        return RedirectToAction("Index", "Profile");
+        return RedirectToAction("Index", "User");
     }
     
     private async Task LoadCategories(CreateResumeViewModel model)

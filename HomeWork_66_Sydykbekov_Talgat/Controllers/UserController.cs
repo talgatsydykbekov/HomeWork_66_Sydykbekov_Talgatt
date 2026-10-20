@@ -1,85 +1,138 @@
-﻿using HomeWork_66_Sydykbekov_Talgat.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using HomeWork_66_Sydykbekov_Talgat.Models;
+using HomeWork_66_Sydykbekov_Talgat.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeWork_66_Sydykbekov_Talgat.Controllers;
-
+[Authorize]
 public class UserController : Controller
 {
-    private MyUserContext _context;
+    private readonly MyUserContext _context;
     private readonly UserManager<MyUser> _userManager;
 
-    public UserController(MyUserContext context, UserManager<MyUser> userManager)
+    public UserController(
+        MyUserContext context,
+        UserManager<MyUser> userManager)
     {
         _context = context;
         _userManager = userManager;
     }
-
-    [Authorize]
+    
+    [HttpGet]
     public async Task<IActionResult> Index()
-    {
-        var userid = int.Parse(_userManager.GetUserId(User));
-        var userr = await _userManager.GetUserAsync(User);
-            //var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userid);
-      return View(userr);
-    }
-    
-    
-    [Authorize]
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(
-        string userName,
-        string email,
-        string phoneNumber)
     {
         var user = await _userManager.GetUserAsync(User);
 
         if (user == null)
-            return NotFound();
+            return Challenge();
+
+        var model = await BuildProfileModel(user);
+
+        return View(model);
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(
+        string? userName,
+        string? email,
+        string? phoneNumber)
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+            return Challenge();
+
+        userName = userName?.Trim();
+        email = email?.Trim();
+        phoneNumber = phoneNumber?.Trim();
 
         if (string.IsNullOrWhiteSpace(userName))
-            ModelState.AddModelError("", "Введите имя.");
+        {
+            ModelState.AddModelError(
+                "",
+                "Введите логин.");
+        }
 
         if (string.IsNullOrWhiteSpace(email) ||
-            !new System.ComponentModel.DataAnnotations.EmailAddressAttribute()
-                .IsValid(email))
+            !new EmailAddressAttribute().IsValid(email))
         {
-            ModelState.AddModelError("", "Введите корректный email.");
+            ModelState.AddModelError(
+                "",
+                "Введите корректный email.");
+        }
+
+        if (string.IsNullOrWhiteSpace(phoneNumber) ||
+            !new PhoneAttribute().IsValid(phoneNumber))
+        {
+            ModelState.AddModelError(
+                "",
+                "Введите корректный телефон.");
         }
 
         if (!ModelState.IsValid)
-            return View("Index", user);
-
-        user.UserName = userName.Trim();
-
-        var newEmail = email.Trim();
-
-        if (user.Email != newEmail)
         {
-            user.Email = newEmail;
+            ViewData["OpenEditModal"] = true;
+
+            return View(
+                "Index",
+                await BuildProfileModel(user));
+        }
+
+        user.UserName = userName!;
+
+        if (user.Email != email)
+        {
+            user.Email = email!;
             user.EmailConfirmed = false;
         }
 
-        var newPhone = phoneNumber?.Trim();
-
-        if (user.PhoneNumber != newPhone)
+        if (user.PhoneNumber != phoneNumber)
         {
-            user.PhoneNumber = newPhone;
+            user.PhoneNumber = phoneNumber;
             user.PhoneNumberConfirmed = false;
         }
 
         var result = await _userManager.UpdateAsync(user);
 
         if (result.Succeeded)
+        {
+            TempData["Success"] = "Профиль сохранён.";
+
             return RedirectToAction(nameof(Index));
+        }
 
         foreach (var error in result.Errors)
-            ModelState.AddModelError("", error.Description);
+        {
+            ModelState.AddModelError(
+                "",
+                error.Description);
+        }
 
-        return View("Index", user);
+        ViewData["OpenEditModal"] = true;
+
+        return View(
+            "Index",
+            await BuildProfileModel(user));
     }
+
     
+    private async Task<ProfileViewModel> BuildProfileModel(
+        MyUser user)
+    {
+        var resumes = await _context.Resumes
+            .AsNoTracking()
+            .Where(r => r.ApplicantId == user.Id)
+            .OrderByDescending(r => r.UpdatedAt)
+            .ToListAsync();
+
+        return new ProfileViewModel
+        {
+            User = user,
+            Resumes = resumes
+        };
+    }
 }

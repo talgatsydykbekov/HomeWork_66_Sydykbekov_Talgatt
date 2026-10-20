@@ -1,28 +1,87 @@
-﻿@model MyUser
+﻿@model HomeWork_66_Sydykbekov_Talgat.ViewModels.ProfileViewModel
 
 @{
-    Layout = "_Layout";
+    ViewData["Title"] = "Мой профиль";
 }
 
-<h2>Мой профиль</h2>
+<div class="container mt-4">
+    <h2>Мой профиль</h2>
 
-<p>Имя: @Model.UserName</p>
-<p>Email: @Model.Email</p>
-<p>Телефон: @Model.PhoneNumber</p>
-@if (User.IsInRole("User"))
-{
-    <a asp-controller="Resume"
-       asp-action="Create"
-       class="btn btn-primary">
-        Создать резюме
-    </a>
-}
-<button type="button"
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#editProfileModal">
-    Редактировать
-</button>
+    @if (TempData["Success"] is string message)
+    {
+        <div class="alert alert-success" role="status">
+            @message
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Логин</dt>
+                <dd class="col-sm-9">@Model.User.UserName</dd>
+
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@Model.User.Email</dd>
+
+                <dt class="col-sm-3">Телефон</dt>
+                <dd class="col-sm-9">
+                    @(string.IsNullOrWhiteSpace(Model.User.PhoneNumber)
+                        ? "Не указан"
+                        : Model.User.PhoneNumber)
+                </dd>
+            </dl>
+
+            <button type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editProfileModal">
+                Редактировать профиль
+            </button>
+        </div>
+    </div>
+
+    @if (User.IsInRole("User"))
+    {
+        <div class="d-flex flex-wrap justify-content-between
+                    align-items-center gap-2 mb-3">
+            <h3 class="mb-0">Мои резюме</h3>
+
+            <a asp-controller="Resume"
+               asp-action="Create"
+               class="btn btn-success">
+                Создать резюме
+            </a>
+        </div>
+
+        @if (Model.Resumes.Count == 0)
+        {
+            <p>У вас пока нет резюме.</p>
+        }
+        else
+        {
+            @foreach (var resume in Model.Resumes)
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @resume.Title
+                        </h5>
+
+                        <p class="card-text">
+                            Ожидаемая зарплата:
+                            @resume.ExpectedSalary.ToString("N2")
+                        </p>
+
+                        <p class="card-text">
+                            Обновлено:
+                            @resume.UpdatedAt.ToString("dd.MM.yyyy HH:mm") UTC
+                        </p>
+                    </div>
+                </div>
+            }
+        }
+    }
+</div>
 
 <div class="modal fade"
      id="editProfileModal"
@@ -32,50 +91,75 @@
 
     <div class="modal-dialog">
         <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title" id="editProfileTitle">
-                    Редактирование профиля
-                </h5>
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Закрыть">
-                </button>
-            </div>
-
             <form asp-controller="User"
                   asp-action="Edit"
                   method="post">
 
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileTitle">
+                        Редактирование профиля
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Закрыть">
+                    </button>
+                </div>
+
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="userName" class="form-label">Имя</label>
-                        <input id="userName"
-                               name="UserName"
-                               value="@Model.UserName"
-                               class="form-control"
-                               required />
+                    <div asp-validation-summary="All"
+                         class="text-danger mb-3">
                     </div>
 
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input id="email"
-                               name="Email"
-                               type="email"
-                               value="@Model.Email"
-                               class="form-control"
-                               required />
+                        <label for="editUserName" class="form-label">
+                            Логин
+                        </label>
+
+                        @Html.TextBox(
+                            "userName",
+                            Model.User.UserName,
+                            new
+                            {
+                                id = "editUserName",
+                                @class = "form-control",
+                                required = "required"
+                            })
                     </div>
 
                     <div class="mb-3">
-                        <label for="phone" class="form-label">Телефон</label>
-                        <input id="phone"
-                               name="PhoneNumber"
-                               type="tel"
-                               value="@Model.PhoneNumber"
-                               class="form-control" />
+                        <label for="editEmail" class="form-label">
+                            Email
+                        </label>
+
+                        @Html.TextBox(
+                            "email",
+                            Model.User.Email,
+                            new
+                            {
+                                id = "editEmail",
+                                @class = "form-control",
+                                type = "email",
+                                required = "required"
+                            })
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editPhone" class="form-label">
+                            Телефон
+                        </label>
+
+                        @Html.TextBox(
+                            "phoneNumber",
+                            Model.User.PhoneNumber,
+                            new
+                            {
+                                id = "editPhone",
+                                @class = "form-control",
+                                type = "tel",
+                                required = "required"
+                            })
                     </div>
                 </div>
 
@@ -91,7 +175,16 @@
                     </button>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
+
+@if (ViewData["OpenEditModal"] is true)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const element = document.getElementById("editProfileModal");
+            bootstrap.Modal.getOrCreateInstance(element).show();
+        });
+    </script>
+}
