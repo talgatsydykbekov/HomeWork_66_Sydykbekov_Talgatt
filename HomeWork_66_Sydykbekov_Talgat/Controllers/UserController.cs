@@ -123,16 +123,29 @@ public class UserController : Controller
     private async Task<ProfileViewModel> BuildProfileModel(
         MyUser user)
     {
-        var resumes = await _context.Resumes
-            .AsNoTracking()
-            .Where(r => r.ApplicantId == user.Id)
-            .OrderByDescending(r => r.UpdatedAt)
-            .ToListAsync();
-
-        return new ProfileViewModel
+        var model = new ProfileViewModel
         {
-            User = user,
-            Resumes = resumes
+            User = user
         };
+
+        if (User.IsInRole("User"))
+        {
+            model.Resumes = await _context.Resumes
+                .AsNoTracking()
+                .Where(r => r.ApplicantId == user.Id)
+                .OrderByDescending(r => r.UpdatedAt)
+                .ToListAsync();
+        }
+
+        if (User.IsInRole("Employer"))
+        {
+            model.Vacancies = await _context.Vacancies
+                .AsNoTracking()
+                .Where(v => v.EmployerId == user.Id)
+                .OrderByDescending(v => v.UpdatedAt)
+                .ToListAsync();
+        }
+
+        return model;
     }
 }

@@ -39,14 +39,65 @@
             </button>
         </div>
     </div>
-    @if (User.IsInRole("Employer"))
-    {
-        <a asp-controller="Vacancy"
-           asp-action="Create"
-           class="btn btn-primary mb-3">
-            Создать вакансию
-        </a>
-    }
+    <div>
+        @if (User.IsInRole("Employer"))
+        {
+            <hr />
+
+            <div class="d-flex flex-wrap justify-content-between
+                align-items-center gap-2 mb-3">
+
+                <h3 class="mb-0">Мои вакансии</h3>
+
+                <a asp-controller="Vacancy"
+                   asp-action="Create"
+                   class="btn btn-primary">
+                    Создать вакансию
+                </a>
+            </div>
+
+            @if (Model.Vacancies.Count == 0)
+            {
+                <p>У вас пока нет вакансий.</p>
+            }
+            else
+            {
+                @foreach (var vacancy in Model.Vacancies)
+                {
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title text-break">
+                                @vacancy.Title
+                            </h5>
+
+                            <p class="card-text">
+                                Зарплата:
+                                @vacancy.Salary.ToString("N2")
+                            </p>
+
+                            <p class="card-text">
+                                Опыт работы:
+                                от @vacancy.ExperienceFrom
+                                до @vacancy.ExperienceTo лет
+                            </p>
+
+                            <p class="card-text">
+                                Обновлено:
+                                @vacancy.UpdatedAt.ToString("dd.MM.yyyy HH:mm:ss") UTC
+                            </p>
+
+                            <p class="card-text">
+                                Статус:
+                                @(vacancy.IsPublished
+                                    ? "Опубликована"
+                                    : "Не опубликована")
+                            </p>
+                        </div>
+                    </div>
+                }
+            }
+        }
+    </div>
     @if (User.IsInRole("User"))
     {
         <div class="d-flex flex-wrap justify-content-between
