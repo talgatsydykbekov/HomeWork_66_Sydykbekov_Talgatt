@@ -80,6 +80,43 @@
                 </a>
             </div>
         </div>
+        <h3 class="mt-4">Опыт работы</h3>
+
+        <a asp-controller="WorkExperience"
+           asp-action="Create"
+           asp-route-resumeId="@Model.Id"
+           class="btn btn-outline-primary mb-3">
+            Добавить опыт работы
+        </a>
+
+        @if (Model.WorkExperiences.Count == 0)
+        {
+            <p>Опыт работы пока не указан.</p>
+        }
+        else
+        {
+            @foreach (var experience in Model.WorkExperiences
+                              .OrderByDescending(w => w.StartYear)
+                              .ThenByDescending(w => w.Id))
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5>@experience.Position</h5>
+
+                        <p>@experience.CompanyName</p>
+
+                        <p>
+                            @experience.StartYear —
+                            @(experience.EndYear?.ToString()
+                                  ?? "по настоящее время")
+                        </p>
+
+                        <div class="text-break"
+                             style="white-space: pre-wrap;">@experience.Responsibilities</div>
+                    </div>
+                </div>
+            }
+        }
     </div>
 
     <a asp-controller="User"

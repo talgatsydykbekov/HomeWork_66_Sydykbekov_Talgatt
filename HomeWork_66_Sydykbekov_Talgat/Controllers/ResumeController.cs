@@ -106,6 +106,7 @@ public class ResumeController : Controller
         var resume = await _context.Resumes
             .AsNoTracking()
             .Include(r => r.Category)
+            .Include(r => r.WorkExperiences)
             .FirstOrDefaultAsync(r =>
                 r.Id == id &&
                 r.ApplicantId == user.Id);
