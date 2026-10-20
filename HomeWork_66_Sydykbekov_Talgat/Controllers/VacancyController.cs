@@ -108,4 +108,24 @@ public class VacancyController : Controller
             })
             .ToListAsync();
     }
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+            return Challenge();
+
+        var vacancy = await _context.Vacancies
+            .AsNoTracking()
+            .Include(v => v.Category)
+            .FirstOrDefaultAsync(v =>
+                v.Id == id &&
+                v.EmployerId == user.Id);
+
+        if (vacancy == null)
+            return NotFound();
+
+        return View(vacancy);
+    }
 }

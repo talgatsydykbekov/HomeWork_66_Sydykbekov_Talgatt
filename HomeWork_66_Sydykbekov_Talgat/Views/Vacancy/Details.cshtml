@@ -1,0 +1,68 @@
+﻿@model Vacancy
+
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container mt-4">
+    <h2 class="text-break">@Model.Title</h2>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-4">Категория</dt>
+                <dd class="col-sm-8">
+                    @Model.Category.NameCategory
+                </dd>
+
+                <dt class="col-sm-4">Зарплата</dt>
+                <dd class="col-sm-8">
+                    @Model.Salary.ToString("N2")
+                </dd>
+
+                <dt class="col-sm-4">Опыт работы</dt>
+                <dd class="col-sm-8">
+                    От @Model.ExperienceFrom
+                    до @Model.ExperienceTo лет
+                </dd>
+
+                <dt class="col-sm-4">Статус</dt>
+                <dd class="col-sm-8">
+                    @(Model.IsPublished
+                        ? "Опубликована"
+                        : "Не опубликована")
+                </dd>
+
+                <dt class="col-sm-4">Создана</dt>
+                <dd class="col-sm-8">
+                    @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm:ss") UTC
+                </dd>
+
+                <dt class="col-sm-4">Обновлена</dt>
+                <dd class="col-sm-8">
+                    @Model.UpdatedAt.ToString("dd.MM.yyyy HH:mm:ss") UTC
+                </dd>
+
+                @if (Model.PublishedAt.HasValue)
+                {
+                    <dt class="col-sm-4">Дата публикации</dt>
+                    <dd class="col-sm-8">
+                        @Model.PublishedAt.Value.ToString("dd.MM.yyyy HH:mm:ss") UTC
+                    </dd>
+                }
+            </dl>
+
+            <h4>Описание и требования</h4>
+
+            <div class="text-break"
+                 style="white-space: pre-wrap;">@Model.Description</div>
+        </div>
+    </div>
+
+    <a asp-controller="User"
+       asp-action="Index"
+       class="btn btn-secondary mt-3">
+        Вернуться в профиль
+    </a>
+</div>
