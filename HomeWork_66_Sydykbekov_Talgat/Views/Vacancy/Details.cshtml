@@ -58,6 +58,14 @@
             <div class="text-break"
                  style="white-space: pre-wrap;">@Model.Description</div>
         </div>
+        <div>
+            <a asp-controller="Vacancy"
+               asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-primary mt-3">
+                Редактировать
+            </a>
+        </div>
     </div>
 
     <a asp-controller="User"

@@ -128,4 +128,103 @@ public class VacancyController : Controller
 
         return View(vacancy);
     }
+    
+    [HttpGet]
+public async Task<IActionResult> Edit(int id)
+{
+    var user = await _userManager.GetUserAsync(User);
+
+    if (user == null)
+        return Challenge();
+
+    var vacancy = await _context.Vacancies
+        .AsNoTracking()
+        .FirstOrDefaultAsync(v =>
+            v.Id == id &&
+            v.EmployerId == user.Id);
+
+    if (vacancy == null)
+        return NotFound();
+
+    var model = new CreateVacancyViewModel
+    {
+        Title = vacancy.Title,
+        Salary = vacancy.Salary,
+        Description = vacancy.Description,
+        ExperienceFrom = vacancy.ExperienceFrom,
+        ExperienceTo = vacancy.ExperienceTo,
+        CategoryId = vacancy.CategoryId
+    };
+
+    await LoadCategories(model);
+
+    ViewBag.VacancyId = vacancy.Id;
+
+    return View(model);
+}
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Edit(
+    int id,
+    CreateVacancyViewModel model)
+{
+    var user = await _userManager.GetUserAsync(User);
+
+    if (user == null)
+        return Challenge();
+
+    var vacancy = await _context.Vacancies
+        .FirstOrDefaultAsync(v =>
+            v.Id == id &&
+            v.EmployerId == user.Id);
+
+    if (vacancy == null)
+        return NotFound();
+
+    if (model.ExperienceFrom.HasValue &&
+        model.ExperienceTo.HasValue &&
+        model.ExperienceFrom.Value > model.ExperienceTo.Value)
+    {
+        ModelState.AddModelError(
+            nameof(model.ExperienceTo),
+            "Максимальный опыт не может быть меньше минимального.");
+    }
+
+    if (model.CategoryId.HasValue)
+    {
+        var categoryExists = await _context.Categories
+            .AnyAsync(c => c.Id == model.CategoryId.Value);
+
+        if (!categoryExists)
+        {
+            ModelState.AddModelError(
+                nameof(model.CategoryId),
+                "Выбранная категория не существует.");
+        }
+    }
+
+    if (!ModelState.IsValid)
+    {
+        await LoadCategories(model);
+
+        ViewBag.VacancyId = vacancy.Id;
+
+        return View(model);
+    }
+
+    vacancy.Title = model.Title.Trim();
+    vacancy.Salary = model.Salary!.Value;
+    vacancy.Description = model.Description.Trim();
+    vacancy.ExperienceFrom = model.ExperienceFrom!.Value;
+    vacancy.ExperienceTo = model.ExperienceTo!.Value;
+    vacancy.CategoryId = model.CategoryId!.Value;
+    vacancy.UpdatedAt = DateTime.UtcNow;
+
+    await _context.SaveChangesAsync();
+
+    return RedirectToAction(
+        nameof(Details),
+        new { id = vacancy.Id });
+}
 }
