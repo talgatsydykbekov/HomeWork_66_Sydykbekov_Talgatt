@@ -40,6 +40,16 @@
                             Вакансии
                         </a>
                     </li>
+                    @if (User.IsInRole("Employer"))
+                    {
+                        <li class="nav-item">
+                            <a asp-controller="ResumeCatalog"
+                               asp-action="Index"
+                               class="nav-link">
+                                Найти сотрудников
+                            </a>
+                        </li>
+                    }
                 </ul>
             </div>
             <div class="d-flex align-items-center gap-3">

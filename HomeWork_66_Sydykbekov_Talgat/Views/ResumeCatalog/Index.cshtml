@@ -1,0 +1,102 @@
+﻿@model HomeWork_66_Sydykbekov_Talgat.ViewModels.ResumeListViewModel
+
+
+
+@{
+    ViewData["Title"] = "Резюме соискателей";
+}
+
+<div class="container mt-4">
+    <h2>Резюме соискателей</h2>
+
+    <form asp-controller="ResumeCatalog"
+          asp-action="Index"
+          method="get"
+          class="mb-4">
+
+        <div class="mb-3">
+            <label asp-for="CategoryId" class="form-label">
+                Категория
+            </label>
+
+            <select asp-for="CategoryId"
+                    asp-items="Model.Categories"
+                    class="form-select">
+                <option value="">Все категории</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Применить
+        </button>
+
+        <a asp-controller="ResumeCatalog"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+            Сбросить
+        </a>
+    </form>
+
+    @if (Model.Resumes.Count == 0)
+    {
+        <p>По выбранным условиям резюме не найдено.</p>
+    }
+    else
+    {
+        @foreach (var resume in Model.Resumes)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h4 class="card-title text-break">
+                        @resume.Title
+                    </h4>
+
+                    <p>
+                        Категория: @resume.Category.NameCategory
+                    </p>
+
+                    <p>
+                        Ожидаемая зарплата:
+                        @resume.ExpectedSalary.ToString("N2")
+                    </p>
+
+                    <p>
+                        Обновлено:
+                        @resume.UpdatedAt.ToString("dd.MM.yyyy HH:mm") UTC
+                    </p>
+                </div>
+            </div>
+        }
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="Страницы резюме"
+                 class="d-flex flex-wrap align-items-center gap-3">
+
+                @if (Model.Page > 1)
+                {
+                    <a asp-action="Index"
+                       asp-route-page="@(Model.Page - 1)"
+                       asp-route-categoryId="@Model.CategoryId"
+                       class="btn btn-outline-primary">
+                        Назад
+                    </a>
+                }
+
+                <span>
+                    Страница @Model.Page из @Model.TotalPages
+                </span>
+
+                @if (Model.Page < Model.TotalPages)
+                {
+                    <a asp-action="Index"
+                       asp-route-page="@(Model.Page + 1)"
+                       asp-route-categoryId="@Model.CategoryId"
+                       class="btn btn-outline-primary">
+                        Далее
+                    </a>
+                }
+            </nav>
+        }
+    }
+</div>
