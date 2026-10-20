@@ -227,4 +227,30 @@ public async Task<IActionResult> Edit(
         nameof(Details),
         new { id = vacancy.Id });
 }
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Refresh(int id)
+{
+    var user = await _userManager.GetUserAsync(User);
+
+    if (user == null)
+        return Challenge();
+
+    var vacancy = await _context.Vacancies
+        .FirstOrDefaultAsync(v =>
+            v.Id == id &&
+            v.EmployerId == user.Id);
+
+    if (vacancy == null)
+        return NotFound();
+
+    vacancy.UpdatedAt = DateTime.UtcNow;
+
+    await _context.SaveChangesAsync();
+
+    TempData["Success"] = "Дата обновления вакансии изменена.";
+
+    return RedirectToAction("Index", "User");
+}
 }

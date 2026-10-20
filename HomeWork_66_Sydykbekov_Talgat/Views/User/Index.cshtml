@@ -109,6 +109,18 @@
                                 Редактировать
                             </a>
                         </div> 
+                        <div>
+                            <form asp-controller="Vacancy"
+                                  asp-action="Refresh"
+                                  asp-route-id="@vacancy.Id"
+                                  method="post"
+                                  class="mt-2">
+
+                                <button type="submit" class="btn btn-outline-primary">
+                                    Обновить дату
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 }
             }
