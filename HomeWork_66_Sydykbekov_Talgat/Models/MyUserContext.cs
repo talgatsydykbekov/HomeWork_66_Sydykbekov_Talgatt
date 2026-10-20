@@ -8,6 +8,7 @@ public class MyUserContext : IdentityDbContext<MyUser, IdentityRole<int>, int>
 {
     public DbSet<Category> Categories { get; set; }
     public DbSet<Resume> Resumes { get; set; }
+    public DbSet<WorkExperience> WorkExperiences { get; set; } = null!;
     public MyUserContext(DbContextOptions<MyUserContext> options) : base(options) { }
     
     protected override void OnModelCreating(ModelBuilder builder)
@@ -29,6 +30,11 @@ public class MyUserContext : IdentityDbContext<MyUser, IdentityRole<int>, int>
             .WithMany()
             .HasForeignKey(r => r.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<WorkExperience>()
+            .HasOne(w => w.Resume)
+            .WithMany(r => r.WorkExperiences)
+            .HasForeignKey(w => w.ResumeId)
+            .OnDelete(DeleteBehavior.Cascade);
         base.OnModelCreating(builder);
     }
 }

@@ -170,6 +170,45 @@ namespace HomeWork_66_Sydykbekov_Talgat.Migrations
                     b.ToTable("Resumes");
                 });
 
+            modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.WorkExperience", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<int?>("EndYear")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("Responsibilities")
+                        .IsRequired()
+                        .HasMaxLength(3000)
+                        .HasColumnType("character varying(3000)");
+
+                    b.Property<int>("ResumeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResumeId");
+
+                    b.ToTable("WorkExperiences");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -321,6 +360,17 @@ namespace HomeWork_66_Sydykbekov_Talgat.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.WorkExperience", b =>
+                {
+                    b.HasOne("HomeWork_66_Sydykbekov_Talgat.Models.Resume", "Resume")
+                        .WithMany("WorkExperiences")
+                        .HasForeignKey("ResumeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Resume");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -370,6 +420,11 @@ namespace HomeWork_66_Sydykbekov_Talgat.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.Resume", b =>
+                {
+                    b.Navigation("WorkExperiences");
                 });
 #pragma warning restore 612, 618
         }

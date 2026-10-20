@@ -45,4 +45,7 @@ public class Resume
     [Url(ErrorMessage = "Введите полную ссылку на LinkedIn")]
     [StringLength(500)]
     public string? LinkedInUrl { get; set; }
+    
+    public ICollection<WorkExperience> WorkExperiences { get; set; }
+        = new List<WorkExperience>();
 }
