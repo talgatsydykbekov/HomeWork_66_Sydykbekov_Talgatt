@@ -66,6 +66,13 @@ public class ResumeController : Controller
             ExpectedSalary = model.ExpectedSalary!.Value,
             CategoryId = model.CategoryId!.Value,
             ApplicantId = user.Id,
+
+            Telegram = model.Telegram?.Trim(),
+            Email = model.Email?.Trim(),
+            PhoneNumber = model.PhoneNumber?.Trim(),
+            FacebookUrl = model.FacebookUrl?.Trim(),
+            LinkedInUrl = model.LinkedInUrl?.Trim(),
+
             CreatedAt = now,
             UpdatedAt = now
         };
@@ -129,7 +136,13 @@ public class ResumeController : Controller
         {
             Title = resume.Title,
             ExpectedSalary = resume.ExpectedSalary,
-            CategoryId = resume.CategoryId
+            CategoryId = resume.CategoryId,
+
+            Telegram = resume.Telegram,
+            Email = resume.Email,
+            PhoneNumber = resume.PhoneNumber,
+            FacebookUrl = resume.FacebookUrl,
+            LinkedInUrl = resume.LinkedInUrl
         };
 
         await LoadCategories(model);
@@ -190,6 +203,11 @@ public class ResumeController : Controller
         resume.ExpectedSalary = model.ExpectedSalary!.Value;
         resume.CategoryId = model.CategoryId!.Value;
         resume.UpdatedAt = DateTime.UtcNow;
+        resume.Telegram = model.Telegram?.Trim();
+        resume.Email = model.Email?.Trim();
+        resume.PhoneNumber = model.PhoneNumber?.Trim();
+        resume.FacebookUrl = model.FacebookUrl?.Trim();
+        resume.LinkedInUrl = model.LinkedInUrl?.Trim();
 
         await _context.SaveChangesAsync();
 
