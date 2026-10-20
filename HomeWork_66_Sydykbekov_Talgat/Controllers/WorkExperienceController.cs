@@ -114,4 +114,107 @@ public class WorkExperienceController : Controller
             "Resume",
             new { id = resume.Id });
     }
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+            return Challenge();
+
+        var experience = await _context.WorkExperiences
+            .AsNoTracking()
+            .FirstOrDefaultAsync(w =>
+                w.Id == id &&
+                w.Resume.ApplicantId == user.Id);
+
+        if (experience == null)
+            return NotFound();
+
+        var model = new CreateWorkExperienceViewModel
+        {
+            ResumeId = experience.ResumeId,
+            CompanyName = experience.CompanyName,
+            Position = experience.Position,
+            Responsibilities = experience.Responsibilities,
+            StartYear = experience.StartYear,
+            EndYear = experience.EndYear
+        };
+
+        ViewBag.ExperienceId = experience.Id;
+
+        return View(model);
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(
+        int id,
+        CreateWorkExperienceViewModel model)
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+            return Challenge();
+
+        var experience = await _context.WorkExperiences
+            .Include(w => w.Resume)
+            .FirstOrDefaultAsync(w =>
+                w.Id == id &&
+                w.Resume.ApplicantId == user.Id);
+
+        if (experience == null)
+            return NotFound();
+
+        // Связь с резюме берём из базы, а не из формы.
+        model.ResumeId = experience.ResumeId;
+
+        var currentYear = DateTime.UtcNow.Year;
+
+        if (model.StartYear.HasValue &&
+            model.StartYear.Value > currentYear)
+        {
+            ModelState.AddModelError(
+                nameof(model.StartYear),
+                "Год начала не может быть в будущем.");
+        }
+
+        if (model.EndYear.HasValue &&
+            model.EndYear.Value > currentYear)
+        {
+            ModelState.AddModelError(
+                nameof(model.EndYear),
+                "Год окончания не может быть в будущем.");
+        }
+
+        if (model.StartYear.HasValue &&
+            model.EndYear.HasValue &&
+            model.EndYear.Value < model.StartYear.Value)
+        {
+            ModelState.AddModelError(
+                nameof(model.EndYear),
+                "Год окончания не может быть раньше года начала.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            ViewBag.ExperienceId = experience.Id;
+
+            return View(model);
+        }
+
+        experience.CompanyName = model.CompanyName.Trim();
+        experience.Position = model.Position.Trim();
+        experience.Responsibilities = model.Responsibilities.Trim();
+        experience.StartYear = model.StartYear!.Value;
+        experience.EndYear = model.EndYear;
+
+        experience.Resume.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(
+            "Details",
+            "Resume",
+            new { id = experience.ResumeId });
+    }
 }

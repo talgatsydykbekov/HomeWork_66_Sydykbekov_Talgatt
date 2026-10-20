@@ -108,11 +108,19 @@
                         <p>
                             @experience.StartYear —
                             @(experience.EndYear?.ToString()
-                                  ?? "по настоящее время")
+                              ?? "по настоящее время")
                         </p>
 
                         <div class="text-break"
                              style="white-space: pre-wrap;">@experience.Responsibilities</div>
+                    </div>
+                    <div>
+                        <a asp-controller="WorkExperience"
+                           asp-action="Edit"
+                           asp-route-id="@experience.Id"
+                           class="btn btn-outline-primary mt-2">
+                            Редактировать
+                        </a>
                     </div>
                 </div>
             }
