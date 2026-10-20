@@ -8,13 +8,37 @@
 
 <div class="container mt-4">
     <h2>Вакансии</h2>
-
     @if (Model.Vacancies.Count == 0)
     {
         <p>Опубликованных вакансий пока нет.</p>
     }
-    else
-    {
+    <form asp-controller="VacancyCatalog"
+          asp-action="Index"
+          method="get"
+          class="mb-4">
+
+        <div class="mb-3">
+            <label asp-for="CategoryId" class="form-label">
+                Категория
+            </label>
+
+            <select asp-for="CategoryId"
+                    asp-items="Model.Categories"
+                    class="form-select">
+                <option value="">Все категории</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Применить
+        </button>
+
+        <a asp-controller="VacancyCatalog"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+            Сбросить
+        </a>
+    </form>
         @foreach (var vacancy in Model.Vacancies)
         {
             <div class="card mb-3">
@@ -69,6 +93,7 @@
                 {
                     <a asp-action="Index"
                        asp-route-page="@(Model.Page - 1)"
+                       asp-route-categoryId="@Model.CategoryId"
                        class="btn btn-outline-primary">
                         Назад
                     </a>
@@ -82,11 +107,12 @@
                 {
                     <a asp-action="Index"
                        asp-route-page="@(Model.Page + 1)"
+                       asp-route-categoryId="@Model.CategoryId"
                        class="btn btn-outline-primary">
                         Далее
                     </a>
                 }
             </nav>
         }
-    }
+    
 </div>
