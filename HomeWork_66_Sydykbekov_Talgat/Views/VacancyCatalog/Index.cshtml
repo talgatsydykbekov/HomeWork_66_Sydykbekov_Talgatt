@@ -20,7 +20,12 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h4 class="card-title text-break">
-                        @vacancy.Title
+                        <a asp-controller="VacancyCatalog"
+                           asp-action="Details"
+                           asp-route-id="@vacancy.Id"
+                           class="stretched-link">
+                            @vacancy.Title
+                        </a>
                     </h4>
 
                     <p>

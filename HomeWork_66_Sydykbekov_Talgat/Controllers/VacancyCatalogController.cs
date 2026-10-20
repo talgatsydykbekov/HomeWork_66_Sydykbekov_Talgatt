@@ -50,4 +50,20 @@ public class VacancyCatalogController : Controller
 
         return View(model);
     }
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var vacancy = await _context.Vacancies
+            .AsNoTracking()
+            .Include(v => v.Category)
+            .Include(v => v.Employer)
+            .FirstOrDefaultAsync(v =>
+                v.Id == id &&
+                v.IsPublished);
+
+        if (vacancy == null)
+            return NotFound();
+
+        return View(vacancy);
+    }
 }
