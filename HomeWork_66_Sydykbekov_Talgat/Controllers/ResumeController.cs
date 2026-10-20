@@ -108,4 +108,93 @@ public class ResumeController : Controller
 
         return View(resume);
     }
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+            return Challenge();
+
+        var resume = await _context.Resumes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(r =>
+                r.Id == id &&
+                r.ApplicantId == user.Id);
+
+        if (resume == null)
+            return NotFound();
+
+        var model = new CreateResumeViewModel
+        {
+            Title = resume.Title,
+            ExpectedSalary = resume.ExpectedSalary,
+            CategoryId = resume.CategoryId
+        };
+
+        await LoadCategories(model);
+
+        ViewBag.ResumeId = resume.Id;
+
+        return View(model);
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(
+        int id,
+        CreateResumeViewModel model)
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+            return Challenge();
+
+        var resume = await _context.Resumes
+            .FirstOrDefaultAsync(r =>
+                r.Id == id &&
+                r.ApplicantId == user.Id);
+
+        if (resume == null)
+            return NotFound();
+
+        if (string.IsNullOrWhiteSpace(model.Title))
+        {
+            ModelState.AddModelError(
+                nameof(model.Title),
+                "Введите должность.");
+        }
+
+        if (model.CategoryId.HasValue)
+        {
+            var categoryExists = await _context.Categories
+                .AnyAsync(c => c.Id == model.CategoryId.Value);
+
+            if (!categoryExists)
+            {
+                ModelState.AddModelError(
+                    nameof(model.CategoryId),
+                    "Выбранная категория не существует.");
+            }
+        }
+
+        if (!ModelState.IsValid)
+        {
+            await LoadCategories(model);
+
+            ViewBag.ResumeId = resume.Id;
+
+            return View(model);
+        }
+
+        resume.Title = model.Title.Trim();
+        resume.ExpectedSalary = model.ExpectedSalary!.Value;
+        resume.CategoryId = model.CategoryId!.Value;
+        resume.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(
+            nameof(Details),
+            new { id = resume.Id });
+    }
 }

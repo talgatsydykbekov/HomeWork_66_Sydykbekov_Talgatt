@@ -31,6 +31,14 @@
                     @Model.UpdatedAt.ToString("dd.MM.yyyy HH:mm") UTC
                 </dd>
             </dl>
+            <div>
+                <a asp-controller="Resume"
+                   asp-action="Edit"
+                   asp-route-id="@Model.Id"
+                   class="btn btn-primary mt-3">
+                    Редактировать
+                </a>
+            </div>
         </div>
     </div>
 
