@@ -39,7 +39,14 @@
             </button>
         </div>
     </div>
-
+    @if (User.IsInRole("Employer"))
+    {
+        <a asp-controller="Vacancy"
+           asp-action="Create"
+           class="btn btn-primary mb-3">
+            Создать вакансию
+        </a>
+    }
     @if (User.IsInRole("User"))
     {
         <div class="d-flex flex-wrap justify-content-between
