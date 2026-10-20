@@ -1,0 +1,84 @@
+﻿@model List<JobApplication>
+
+@{
+    ViewData["Title"] = "Мои отклики";
+}
+
+<div class="container mt-4">
+    <h2>Мои отклики</h2>
+    @if (TempData["Success"] is string message)
+    {
+        <div class="alert alert-success" role="status">
+            @message
+        </div>
+    }
+    @if (Model.Count == 0)
+    {
+        <p>Вы пока не откликались на вакансии.</p>
+
+        <a asp-controller="VacancyCatalog"
+           asp-action="Index"
+           class="btn btn-primary">
+            Найти вакансию
+        </a>
+    }
+    else
+    {
+        @foreach (var application in Model)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h4 class="text-break">
+                        @application.Vacancy.Title
+                    </h4>
+
+                    <p>
+                        Компания:
+
+                        <a asp-controller="Company"
+                           asp-action="Details"
+                           asp-route-id="@application.Vacancy.EmployerId">
+                            @application.Vacancy.Employer.UserName
+                        </a>
+                    </p>
+
+                    <p>
+                        Ваше резюме:
+
+                        <a asp-controller="Resume"
+                           asp-action="Details"
+                           asp-route-id="@application.ResumeId">
+                            @application.Resume.Title
+                        </a>
+                    </p>
+
+                    <p>
+                        Дата отклика:
+                        @application.CratedAt.ToString("dd.MM.yyyy HH:mm") UTC
+                    </p>
+
+                    @if (application.Vacancy.IsPublished)
+                    {
+                        <a asp-controller="VacancyCatalog"
+                           asp-action="Details"
+                           asp-route-id="@application.VacancyId"
+                           class="btn btn-outline-primary">
+                            Посмотреть вакансию
+                        </a>
+                    }
+                    else
+                    {
+                        <p class="mb-0">
+                            Вакансия снята с публикации.
+                        </p>
+                    }
+                </div>
+            </div>
+        }
+    }
+    <a asp-controller="User"
+       asp-action="Index"
+       class="btn btn-secondary mt-3">
+        Вернуться в профиль
+    </a>
+</div>

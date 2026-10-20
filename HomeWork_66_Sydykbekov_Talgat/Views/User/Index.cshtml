@@ -153,6 +153,13 @@
     </div>
     @if (User.IsInRole("User"))
     {
+        <div>
+            <a asp-controller="JobApplication"
+               asp-action="Index"
+               class="btn btn-outline-primary mb-3">
+                Мои отклики
+            </a>
+        </div>
         <div class="d-flex flex-wrap justify-content-between
                     align-items-center gap-2 mb-3">
             <h3 class="mb-0">Мои резюме</h3>

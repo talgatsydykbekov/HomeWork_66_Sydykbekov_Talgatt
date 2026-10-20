@@ -49,7 +49,7 @@ public class JobApplicationController : Controller
         {
             TempData["Success"] =
                 "Отклик с этим резюме уже существует.";
-            return RedirectToAction("Index", "User");
+            return RedirectToAction(nameof(Index));
         }
 
         var application = new JobApplication
@@ -78,6 +78,24 @@ public class JobApplicationController : Controller
             return RedirectToAction("Index", "User");
         }
         TempData["Success"] = "Отклик отправлен.";
-        return RedirectToAction("Index", "User");
+        return RedirectToAction(nameof(Index));
+    }
+    [HttpGet]
+    public async Task<IActionResult> Index()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Challenge();
+        var applications = await _context.JobApplications
+            .AsNoTracking()
+            .Include(a => a.Resume)
+            .Include(a => a.Vacancy)
+            .ThenInclude(v => v.Employer)
+            .Where(a => a.Resume.ApplicantId == user.Id)
+            .OrderByDescending(a => a.CratedAt)
+            .ThenByDescending(a => a.Id)
+            .ToListAsync();
+
+        return View(applications);
     }
 }
