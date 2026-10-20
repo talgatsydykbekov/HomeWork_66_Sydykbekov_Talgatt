@@ -14,4 +14,5 @@ public class VacancyListViewModel
     public int? CategoryId { get; set; }
 
     public List<SelectListItem> Categories { get; set; } = new();
+    public string? Search { get; set; }
 }

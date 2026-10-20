@@ -17,10 +17,10 @@ public class VacancyCatalogController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(int? categoryId,int page = 1)
+    public async Task<IActionResult> Index(int? categoryId,string? search,int page = 1)
     {
         const int pageSize = 20;
-
+        search = search?.Trim();
         var query = _context.Vacancies
             .AsNoTracking()
             .Where(v => v.IsPublished);
@@ -28,6 +28,11 @@ public class VacancyCatalogController : Controller
         {
             query = query.Where(v =>
                 v.CategoryId == categoryId.Value);
+        }
+
+        if (!string.IsNullOrEmpty(search))
+        {
+            query = query.Where(v => v.Title.Contains(search));
         }
         var totalCount = await query.CountAsync();
 

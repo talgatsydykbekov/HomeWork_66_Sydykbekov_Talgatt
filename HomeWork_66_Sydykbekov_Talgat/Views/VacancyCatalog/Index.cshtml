@@ -16,7 +16,15 @@
           asp-action="Index"
           method="get"
           class="mb-4">
+        <div class="mb-3">
+            <label asp-for="Search" class="form-label">
+                Название вакансии
+            </label>
 
+            <input asp-for="Search"
+                   class="form-control"
+                   placeholder="Например, разработчик" />
+        </div>
         <div class="mb-3">
             <label asp-for="CategoryId" class="form-label">
                 Категория
@@ -94,6 +102,7 @@
                     <a asp-action="Index"
                        asp-route-page="@(Model.Page - 1)"
                        asp-route-categoryId="@Model.CategoryId"
+                       asp-route-search="@Model.Search"
                        class="btn btn-outline-primary">
                         Назад
                     </a>
@@ -108,6 +117,7 @@
                     <a asp-action="Index"
                        asp-route-page="@(Model.Page + 1)"
                        asp-route-categoryId="@Model.CategoryId"
+                       asp-route-search="@Model.Search"
                        class="btn btn-outline-primary">
                         Далее
                     </a>
