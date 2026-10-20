@@ -93,6 +93,31 @@
                                     : "Не опубликована")
                             </p>
                         </div>
+                        <form asp-controller="Vacancy"
+                              asp-action="SetPublication"
+                              asp-route-id="@vacancy.Id"
+                              method="post"
+                              class="mt-2">
+
+                            @if (vacancy.IsPublished)
+                            {
+                                <button type="submit"
+                                        name="isPublished"
+                                        value="false"
+                                        class="btn btn-outline-secondary">
+                                    Снять с публикации
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="submit"
+                                        name="isPublished"
+                                        value="true"
+                                        class="btn btn-success">
+                                    Опубликовать
+                                </button>
+                            }
+                        </form>
                         <div>
                             <a asp-controller="Vacancy"
                                asp-action="Details"

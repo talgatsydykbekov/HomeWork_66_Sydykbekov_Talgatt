@@ -253,4 +253,39 @@ public async Task<IActionResult> Refresh(int id)
 
     return RedirectToAction("Index", "User");
 }
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> SetPublication(
+    int id,
+    bool isPublished)
+{
+    var user = await _userManager.GetUserAsync(User);
+
+    if (user == null)
+        return Challenge();
+
+    var vacancy = await _context.Vacancies
+        .FirstOrDefaultAsync(v =>
+            v.Id == id &&
+            v.EmployerId == user.Id);
+
+    if (vacancy == null)
+        return NotFound();
+
+    // Дату меняем только при переходе к публикации.
+    if (isPublished && !vacancy.IsPublished)
+    {
+        vacancy.PublishedAt = DateTime.UtcNow;
+    }
+
+    vacancy.IsPublished = isPublished;
+
+    await _context.SaveChangesAsync();
+
+    TempData["Success"] = isPublished
+        ? "Вакансия опубликована."
+        : "Вакансия снята с публикации.";
+
+    return RedirectToAction("Index", "User");
+}
 }
