@@ -40,6 +40,14 @@
                        class="btn btn-primary">
                         Посмотреть резюме
                     </a>
+                    
+                        <a asp-controller="Chat"
+                           asp-action="Index"
+                           asp-route-id="@application.Id"
+                           class="btn btn-success mt-2">
+                            Открыть переписку
+                        </a>
+                    
                 </div>
             </div>
         }

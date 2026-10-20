@@ -78,7 +78,10 @@ public class JobApplicationController : Controller
             return RedirectToAction("Index", "User");
         }
         TempData["Success"] = "Отклик отправлен.";
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(
+            "Index",
+            "Chat",
+            new { id = application.Id });
     }
     [HttpGet]
     public async Task<IActionResult> Index()

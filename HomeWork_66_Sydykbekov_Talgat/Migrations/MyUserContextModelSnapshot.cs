@@ -39,6 +39,37 @@ namespace HomeWork_66_Sydykbekov_Talgat.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.ChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("JobApplicationId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(5000)
+                        .HasColumnType("character varying(5000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SenderId");
+
+                    b.HasIndex("JobApplicationId", "SentAt", "Id");
+
+                    b.ToTable("ChatMessages");
+                });
+
             modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.Education", b =>
                 {
                     b.Property<int>("Id")
@@ -463,6 +494,25 @@ namespace HomeWork_66_Sydykbekov_Talgat.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.ChatMessage", b =>
+                {
+                    b.HasOne("HomeWork_66_Sydykbekov_Talgat.Models.JobApplication", "JobApplication")
+                        .WithMany()
+                        .HasForeignKey("JobApplicationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HomeWork_66_Sydykbekov_Talgat.Models.MyUser", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("JobApplication");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.Education", b =>

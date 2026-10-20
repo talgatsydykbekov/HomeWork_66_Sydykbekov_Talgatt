@@ -44,7 +44,6 @@
 
                     <p>
                         Ваше резюме:
-
                         <a asp-controller="Resume"
                            asp-action="Details"
                            asp-route-id="@application.ResumeId">
@@ -72,6 +71,14 @@
                             Вакансия снята с публикации.
                         </p>
                     }
+                    <div>
+                        <a asp-controller="Chat"
+                           asp-action="Index"
+                           asp-route-id="@application.Id"
+                           class="btn btn-success mt-2">
+                            Открыть переписку
+                        </a>
+                    </div>
                 </div>
             </div>
         }

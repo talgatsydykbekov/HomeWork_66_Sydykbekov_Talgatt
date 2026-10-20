@@ -12,6 +12,7 @@ public class MyUserContext : IdentityDbContext<MyUser, IdentityRole<int>, int>
     public DbSet<Education> Educations { get; set; } = null!;
     public DbSet<Vacancy> Vacancies { get; set; } = null!;
     public DbSet<JobApplication> JobApplications { get; set; } = null!;
+    public DbSet<ChatMessage> ChatMessages { get; set; } = null!;
     public MyUserContext(DbContextOptions<MyUserContext> options) : base(options) { }
     
     protected override void OnModelCreating(ModelBuilder builder)
@@ -83,6 +84,25 @@ public class MyUserContext : IdentityDbContext<MyUser, IdentityRole<int>, int>
                 a.ResumeId
             })
             .IsUnique();
+        builder.Entity<ChatMessage>()
+            .HasOne(m => m.JobApplication)
+            .WithMany()
+            .HasForeignKey(m => m.JobApplicationId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<ChatMessage>()
+            .HasOne(m => m.Sender)
+            .WithMany()
+            .HasForeignKey(m => m.SenderId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<ChatMessage>()
+            .HasIndex(m => new
+            {
+                m.JobApplicationId,
+                m.SentAt,
+                m.Id
+            });
         base.OnModelCreating(builder);
     }
 }

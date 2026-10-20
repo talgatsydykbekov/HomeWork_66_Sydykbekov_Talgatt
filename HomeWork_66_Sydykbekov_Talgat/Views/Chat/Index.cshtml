@@ -1,0 +1,97 @@
+﻿@model HomeWork_66_Sydykbekov_Talgat.ViewModels.ChatViewModel
+
+
+
+@{
+    ViewData["Title"] = "Переписка";
+}
+
+<div class="container mt-4">
+    <h2>Переписка</h2>
+
+    @if (TempData["Success"] is string message)
+    {
+        <div class="alert alert-success" role="status">
+            @message
+        </div>
+    }
+
+    <p class="text-break">
+        Вакансия: <strong>@Model.VacancyTitle</strong>
+    </p>
+
+    <p class="text-break">
+        Резюме: <strong>@Model.ResumeTitle</strong>
+    </p>
+
+    <hr />
+
+    @if (Model.Messages.Count == 0)
+    {
+        <p>Сообщений пока нет. Напишите первое сообщение.</p>
+    }
+    else
+    {
+        @foreach (var item in Model.Messages)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap
+                                justify-content-between gap-2">
+                        <strong>
+                            @(item.SenderId == Model.CurrentUserId
+                                ? "Вы"
+                                : item.Sender.UserName)
+                        </strong>
+
+                        <span>
+                            @item.SentAt.ToString("dd.MM.yyyy HH:mm:ss") UTC
+                        </span>
+                    </div>
+
+                    <div class="text-break mt-2"
+                         style="white-space: pre-wrap;">@item.Text</div>
+                </div>
+            </div>
+        }
+    }
+
+    <form asp-controller="Chat"
+          asp-action="Send"
+          asp-route-id="@Model.ApplicationId"
+          method="post"
+          class="mt-4">
+
+        <div asp-validation-summary="All"
+             class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="Text" class="form-label">
+                Сообщение
+            </label>
+
+            <textarea asp-for="Text"
+                      rows="4"
+                      maxlength="5000"
+                      required
+                      class="form-control"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Отправить
+        </button>
+
+        <a asp-controller="Chat"
+           asp-action="Index"
+           asp-route-id="@Model.ApplicationId"
+           class="btn btn-outline-secondary">
+            Обновить переписку
+        </a>
+    </form>
+
+    <a asp-controller="User"
+       asp-action="Index"
+       class="btn btn-secondary mt-3">
+        Вернуться в профиль
+    </a>
+</div>
