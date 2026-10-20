@@ -77,6 +77,14 @@
                             @resume.UpdatedAt.ToString("dd.MM.yyyy HH:mm") UTC
                         </p>
                     </div>
+                    <div>
+                        <a asp-controller="Resume"
+                           asp-action="Details"
+                           asp-route-id="@resume.Id"
+                           class="btn btn-primary">
+                            Посмотреть
+                        </a>
+                    </div>
                 </div>
             }
         }

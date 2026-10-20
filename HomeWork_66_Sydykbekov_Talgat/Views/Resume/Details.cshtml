@@ -1,0 +1,42 @@
+﻿@model Resume
+
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container mt-4">
+    <h2 class="text-break">@Model.Title</h2>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-4">Категория</dt>
+                <dd class="col-sm-8">
+                    @Model.Category.NameCategory
+                </dd>
+
+                <dt class="col-sm-4">Ожидаемая зарплата</dt>
+                <dd class="col-sm-8">
+                    @Model.ExpectedSalary.ToString("N2")
+                </dd>
+
+                <dt class="col-sm-4">Дата создания</dt>
+                <dd class="col-sm-8">
+                    @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm") UTC
+                </dd>
+
+                <dt class="col-sm-4">Дата обновления</dt>
+                <dd class="col-sm-8">
+                    @Model.UpdatedAt.ToString("dd.MM.yyyy HH:mm") UTC
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <a asp-controller="User"
+       asp-action="Index"
+       class="btn btn-secondary mt-3">
+        Вернуться в профиль
+    </a>
+</div>

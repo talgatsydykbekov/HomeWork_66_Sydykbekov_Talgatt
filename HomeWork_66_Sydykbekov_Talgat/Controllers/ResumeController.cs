@@ -87,4 +87,25 @@ public class ResumeController : Controller
                 Text = c.NameCategory
             }).ToListAsync();
     }
+    [Authorize(Roles = "User")]
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+            return Challenge();
+
+        var resume = await _context.Resumes
+            .AsNoTracking()
+            .Include(r => r.Category)
+            .FirstOrDefaultAsync(r =>
+                r.Id == id &&
+                r.ApplicantId == user.Id);
+
+        if (resume == null)
+            return NotFound();
+
+        return View(resume);
+    }
 }
