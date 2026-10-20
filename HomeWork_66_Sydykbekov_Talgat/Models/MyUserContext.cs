@@ -11,6 +11,7 @@ public class MyUserContext : IdentityDbContext<MyUser, IdentityRole<int>, int>
     public DbSet<WorkExperience> WorkExperiences { get; set; } = null!;
     public DbSet<Education> Educations { get; set; } = null!;
     public DbSet<Vacancy> Vacancies { get; set; } = null!;
+    public DbSet<JobApplication> JobApplications { get; set; } = null!;
     public MyUserContext(DbContextOptions<MyUserContext> options) : base(options) { }
     
     protected override void OnModelCreating(ModelBuilder builder)
@@ -57,6 +58,31 @@ public class MyUserContext : IdentityDbContext<MyUser, IdentityRole<int>, int>
             .WithMany()
             .HasForeignKey(v => v.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<JobApplication>()
+            .HasOne(a => a.Vacancy)
+            .WithMany()
+            .HasForeignKey(a => a.VacancyId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<JobApplication>()
+            .HasOne(a => a.Resume)
+            .WithMany()
+            .HasForeignKey(a => a.ResumeId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<JobApplication>()
+            .HasOne(a => a.InitiatedByUser)
+            .WithMany()
+            .HasForeignKey(a => a.InitiatedByUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<JobApplication>()
+            .HasIndex(a => new
+            {
+                a.VacancyId,
+                a.ResumeId
+            })
+            .IsUnique();
         base.OnModelCreating(builder);
     }
 }

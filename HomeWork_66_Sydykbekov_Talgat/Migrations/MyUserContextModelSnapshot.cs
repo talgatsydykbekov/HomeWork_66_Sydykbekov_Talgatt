@@ -76,6 +76,38 @@ namespace HomeWork_66_Sydykbekov_Talgat.Migrations
                     b.ToTable("Educations");
                 });
 
+            modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.JobApplication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CratedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("InitiatedByUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ResumeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("VacancyId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InitiatedByUserId");
+
+                    b.HasIndex("ResumeId");
+
+                    b.HasIndex("VacancyId", "ResumeId")
+                        .IsUnique();
+
+                    b.ToTable("JobApplications");
+                });
+
             modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.MyUser", b =>
                 {
                     b.Property<int>("Id")
@@ -442,6 +474,33 @@ namespace HomeWork_66_Sydykbekov_Talgat.Migrations
                         .IsRequired();
 
                     b.Navigation("Resume");
+                });
+
+            modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.JobApplication", b =>
+                {
+                    b.HasOne("HomeWork_66_Sydykbekov_Talgat.Models.MyUser", "InitiatedByUser")
+                        .WithMany()
+                        .HasForeignKey("InitiatedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HomeWork_66_Sydykbekov_Talgat.Models.Resume", "Resume")
+                        .WithMany()
+                        .HasForeignKey("ResumeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HomeWork_66_Sydykbekov_Talgat.Models.Vacancy", "Vacancy")
+                        .WithMany()
+                        .HasForeignKey("VacancyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("InitiatedByUser");
+
+                    b.Navigation("Resume");
+
+                    b.Navigation("Vacancy");
                 });
 
             modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.Resume", b =>
