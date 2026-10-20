@@ -1,0 +1,79 @@
+﻿@model HomeWork_66_Sydykbekov_Talgat.ViewModels.VacancyListViewModel
+
+
+
+@{
+    ViewData["Title"] = "Вакансии";
+}
+
+<div class="container mt-4">
+    <h2>Вакансии</h2>
+
+    @if (Model.Vacancies.Count == 0)
+    {
+        <p>Опубликованных вакансий пока нет.</p>
+    }
+    else
+    {
+        @foreach (var vacancy in Model.Vacancies)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h4 class="card-title text-break">
+                        @vacancy.Title
+                    </h4>
+
+                    <p>
+                        Зарплата:
+                        @vacancy.Salary.ToString("N2")
+                    </p>
+
+                    <p>
+                        Категория: @vacancy.Category.NameCategory
+                    </p>
+
+                    <p>
+                        Работодатель: @vacancy.Employer.UserName
+                    </p>
+
+                    @if (vacancy.PublishedAt.HasValue)
+                    {
+                        <p>
+                            Опубликована:
+                            @vacancy.PublishedAt.Value.ToString("dd.MM.yyyy HH:mm") UTC
+                        </p>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="Страницы вакансий"
+                 class="d-flex flex-wrap align-items-center gap-3">
+
+                @if (Model.Page > 1)
+                {
+                    <a asp-action="Index"
+                       asp-route-page="@(Model.Page - 1)"
+                       class="btn btn-outline-primary">
+                        Назад
+                    </a>
+                }
+
+                <span>
+                    Страница @Model.Page из @Model.TotalPages
+                </span>
+
+                @if (Model.Page < Model.TotalPages)
+                {
+                    <a asp-action="Index"
+                       asp-route-page="@(Model.Page + 1)"
+                       class="btn btn-outline-primary">
+                        Далее
+                    </a>
+                }
+            </nav>
+        }
+    }
+</div>
