@@ -17,10 +17,12 @@ public class VacancyCatalogController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(int? categoryId,string? search,int page = 1)
+    public async Task<IActionResult> Index(int? categoryId,string? search,string sort = "updated",int page = 1)
     {
         const int pageSize = 20;
         search = search?.Trim();
+        if(sort != "salaryAsk" && sort != "SalaryDesc")
+            sort = "updated";
         var query = _context.Vacancies
             .AsNoTracking()
             .Where(v => v.IsPublished);
@@ -41,6 +43,17 @@ public class VacancyCatalogController : Controller
             (int)Math.Ceiling(totalCount / (double)pageSize));
 
         page = Math.Clamp(page, 1, totalPages);
+
+        var sortedQuary = sort switch
+        {
+            "salaryAsk" => query.OrderBy(v => v.Salary)
+                .ThenByDescending(v => v.Id),
+
+            "salaryDesc" => query.OrderByDescending(v => v.Salary)
+                .ThenByDescending(v => v.Id),
+            _ => query.OrderByDescending(v => v.UpdatedAt)
+                .ThenByDescending(v => v.Id)
+        };
 
         var vacancies = await query
             .Include(v => v.Employer)
@@ -65,7 +78,8 @@ public class VacancyCatalogController : Controller
             Page = page,
             TotalPages = totalPages,
             Categories = categories,
-            CategoryId = categoryId
+            CategoryId = categoryId,
+            Search = search
         };
 
         return View(model);

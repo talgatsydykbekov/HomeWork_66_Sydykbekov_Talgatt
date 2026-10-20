@@ -46,6 +46,25 @@
            class="btn btn-outline-secondary">
             Сбросить
         </a>
+        <div class="mb-3">
+            <label asp-for="Sort" class="form-label">
+                Сортировка
+            </label>
+
+            <select asp-for="Sort" class="form-select">
+                <option value="updated">
+                    Сначала недавно обновлённые
+                </option>
+
+                <option value="salaryAsc">
+                    Зарплата: сначала меньшая
+                </option>
+
+                <option value="salaryDesc">
+                    Зарплата: сначала большая
+                </option>
+            </select>
+        </div>
     </form>
         @foreach (var vacancy in Model.Vacancies)
         {
@@ -103,6 +122,7 @@
                        asp-route-page="@(Model.Page - 1)"
                        asp-route-categoryId="@Model.CategoryId"
                        asp-route-search="@Model.Search"
+                       asp-route-sort="@Model.Sort"
                        class="btn btn-outline-primary">
                         Назад
                     </a>
@@ -118,6 +138,7 @@
                        asp-route-page="@(Model.Page + 1)"
                        asp-route-categoryId="@Model.CategoryId"
                        asp-route-search="@Model.Search"
+                       asp-route-sort="@Model.Sort"
                        class="btn btn-outline-primary">
                         Далее
                     </a>

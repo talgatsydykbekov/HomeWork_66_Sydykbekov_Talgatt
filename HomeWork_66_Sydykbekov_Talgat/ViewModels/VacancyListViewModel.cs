@@ -15,4 +15,5 @@ public class VacancyListViewModel
 
     public List<SelectListItem> Categories { get; set; } = new();
     public string? Search { get; set; }
+    public string Sort { get; set; } = "updated";
 }
