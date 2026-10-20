@@ -207,6 +207,61 @@ namespace HomeWork_66_Sydykbekov_Talgat.Migrations
                     b.ToTable("Resumes");
                 });
 
+            modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.Vacancy", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(10000)
+                        .HasColumnType("character varying(10000)");
+
+                    b.Property<int>("EmployerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ExperienceFrom")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ExperienceTo")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("PublishedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Salary")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("EmployerId");
+
+                    b.ToTable("Vacancies");
+                });
+
             modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.WorkExperience", b =>
                 {
                     b.Property<int>("Id")
@@ -406,6 +461,25 @@ namespace HomeWork_66_Sydykbekov_Talgat.Migrations
                     b.Navigation("Applicant");
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.Vacancy", b =>
+                {
+                    b.HasOne("HomeWork_66_Sydykbekov_Talgat.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HomeWork_66_Sydykbekov_Talgat.Models.MyUser", "Employer")
+                        .WithMany()
+                        .HasForeignKey("EmployerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Employer");
                 });
 
             modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.WorkExperience", b =>
