@@ -105,6 +105,38 @@
                             </button>
                         </form>
                     </div>
+                    <div>
+                        <p>
+                            Статус:
+                            @(resume.IsPublished ? "Опубликовано" : "Не опубликовано")
+                        </p>
+
+                        <form asp-controller="Resume"
+                              asp-action="SetPublication"
+                              asp-route-id="@resume.Id"
+                              method="post"
+                              class="mt-2">
+
+                            @if (resume.IsPublished)
+                            {
+                                <button type="submit"
+                                        name="isPublished"
+                                        value="false"
+                                        class="btn btn-outline-secondary">
+                                    Снять с публикации
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="submit"
+                                        name="isPublished"
+                                        value="true"
+                                        class="btn btn-success">
+                                    Опубликовать
+                                </button>
+                            }
+                        </form>
+                    </div>
                 </div>
             }
         }

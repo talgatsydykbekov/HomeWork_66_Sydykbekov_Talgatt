@@ -223,4 +223,34 @@ public class ResumeController : Controller
 
         return RedirectToAction("Index", "User");
     }
+    [Authorize(Roles = "User")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SetPublication(
+        int id,
+        bool isPublished)
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+            return Challenge();
+
+        var resume = await _context.Resumes
+            .FirstOrDefaultAsync(r =>
+                r.Id == id &&
+                r.ApplicantId == user.Id);
+
+        if (resume == null)
+            return NotFound();
+
+        resume.IsPublished = isPublished;
+
+        await _context.SaveChangesAsync();
+
+        TempData["Success"] = isPublished
+            ? "Резюме опубликовано."
+            : "Резюме снято с публикации.";
+
+        return RedirectToAction("Index", "User");
+    }
 }
