@@ -1,76 +1,142 @@
 ﻿@model Vacancy
 
-
 @{
     ViewData["Title"] = Model.Title;
 }
 
-<div class="container mt-4">
-    <h2 class="text-break">@Model.Title</h2>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
 
-    <div class="card mt-3">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-4">Категория</dt>
-                <dd class="col-sm-8">
-                    @Model.Category.NameCategory
-                </dd>
+            <div class="card border-0 bg-body-tertiary rounded-4 mb-4">
+                <div class="card-body p-4 p-md-5">
 
-                <dt class="col-sm-4">Зарплата</dt>
-                <dd class="col-sm-8">
-                    @Model.Salary.ToString("N2")
-                </dd>
+                    <div class="d-flex flex-wrap justify-content-between
+                                align-items-start gap-3 mb-4">
+                        <div>
+                            <div class="small text-muted mb-2">
+                                Моя вакансия
+                            </div>
 
-                <dt class="col-sm-4">Опыт работы</dt>
-                <dd class="col-sm-8">
-                    От @Model.ExperienceFrom
-                    до @Model.ExperienceTo лет
-                </dd>
+                            <h1 class="h2 fw-bold text-break mb-3">
+                                @Model.Title
+                            </h1>
 
-                <dt class="col-sm-4">Статус</dt>
-                <dd class="col-sm-8">
-                    @(Model.IsPublished
-                        ? "Опубликована"
-                        : "Не опубликована")
-                </dd>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge bg-secondary text-wrap text-start">
+                                    @Model.Category.NameCategory
+                                </span>
 
-                <dt class="col-sm-4">Создана</dt>
-                <dd class="col-sm-8">
-                    @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm:ss") UTC
-                </dd>
+                                <span class="badge
+                                             @(Model.IsPublished
+                                                                                              ? "bg-success"
+                                                                                              : "bg-secondary")">
+                                    @(Model.IsPublished
+                                        ? "Опубликована"
+                                        : "Не опубликована")
+                                </span>
+                            </div>
+                        </div>
 
-                <dt class="col-sm-4">Обновлена</dt>
-                <dd class="col-sm-8">
-                    @Model.UpdatedAt.ToString("dd.MM.yyyy HH:mm:ss") UTC
-                </dd>
+                        <a asp-controller="User"
+                           asp-action="Index"
+                           class="btn btn-outline-secondary">
+                            К профилю
+                        </a>
+                    </div>
 
-                @if (Model.PublishedAt.HasValue)
-                {
-                    <dt class="col-sm-4">Дата публикации</dt>
-                    <dd class="col-sm-8">
-                        @Model.PublishedAt.Value.ToString("dd.MM.yyyy HH:mm:ss") UTC
-                    </dd>
-                }
-            </dl>
+                    <div class="row g-4 align-items-end">
+                        <div class="col-12 col-md-5">
+                            <div class="small text-muted mb-1">
+                                Зарплата
+                            </div>
 
-            <h4>Описание и требования</h4>
+                            <div class="h3 fw-semibold mb-0">
+                                @Model.Salary.ToString("N2")
+                            </div>
+                        </div>
 
-            <div class="text-break"
-                 style="white-space: pre-wrap;">@Model.Description</div>
-        </div>
-        <div>
-            <a asp-controller="Vacancy"
-               asp-action="Edit"
-               asp-route-id="@Model.Id"
-               class="btn btn-primary mt-3">
-                Редактировать
-            </a>
+                        <div class="col-12 col-md-4">
+                            <div class="small text-muted mb-1">
+                                Требуемый опыт
+                            </div>
+
+                            <div class="fw-semibold">
+                                От @Model.ExperienceFrom
+                                до @Model.ExperienceTo лет
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-3 text-md-end">
+                            <a asp-controller="Vacancy"
+                               asp-action="Edit"
+                               asp-route-id="@Model.Id"
+                               class="btn btn-primary">
+                                Редактировать
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <section class="card rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-4">Описание и требования</h2>
+
+                    <div class="text-break">
+                        @foreach (var line in Model.Description
+                                          .Replace("\r\n", "\n")
+                                          .Replace("\r", "\n")
+                                          .Split('\n'))
+                        {
+                            @line<br />
+                        }
+                    </div>
+                </div>
+            </section>
+
+            <section class="card rounded-4">
+                <div class="card-body p-4">
+                    <h2 class="h5 mb-4">Даты вакансии</h2>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-md-4">
+                            <div class="small text-muted mb-1">
+                                Создана
+                            </div>
+
+                            <div>
+                                @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm:ss") UTC
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <div class="small text-muted mb-1">
+                                Обновлена
+                            </div>
+
+                            <div>
+                                @Model.UpdatedAt.ToString("dd.MM.yyyy HH:mm:ss") UTC
+                            </div>
+                        </div>
+
+                        @if (Model.PublishedAt.HasValue)
+                        {
+                            <div class="col-12 col-md-4">
+                                <div class="small text-muted mb-1">
+                                    Дата публикации
+                                </div>
+
+                                <div>
+                                    @Model.PublishedAt.Value.ToString("dd.MM.yyyy HH:mm:ss") UTC
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </section>
+
         </div>
     </div>
-
-    <a asp-controller="User"
-       asp-action="Index"
-       class="btn btn-secondary mt-3">
-        Вернуться в профиль
-    </a>
 </div>
