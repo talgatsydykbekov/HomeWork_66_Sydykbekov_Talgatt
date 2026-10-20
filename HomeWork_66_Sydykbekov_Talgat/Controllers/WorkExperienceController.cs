@@ -217,4 +217,28 @@ public class WorkExperienceController : Controller
             "Resume",
             new { id = experience.ResumeId });
     }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Challenge();
+        var experience = await _context.WorkExperiences
+            .Include(w => w.Resume)
+            .FirstOrDefaultAsync(w =>
+                w.Id == id &&
+                w.Resume.ApplicantId == user.Id);
+        if (experience == null)
+            return NotFound();
+        var resumeId = experience.ResumeId;
+        experience.Resume.UpdatedAt = DateTime.UtcNow;
+        _context.WorkExperiences.Remove(experience);
+        await _context.SaveChangesAsync();
+        return RedirectToAction(
+            "Details",
+            "Resume",
+            new { id = resumeId });
+    }
 }

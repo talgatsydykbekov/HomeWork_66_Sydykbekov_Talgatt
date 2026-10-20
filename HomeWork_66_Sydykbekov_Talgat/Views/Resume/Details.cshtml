@@ -122,6 +122,17 @@
                             Редактировать
                         </a>
                     </div>
+                    <form asp-controller="WorkExperience"
+                          asp-action="Delete"
+                          asp-route-id="@experience.Id"
+                          method="post"
+                          class="mt-2"
+                          onsubmit="return confirm('Удалить эту запись опыта работы?');">
+
+                        <button type="submit" class="btn btn-outline-danger">
+                            Удалить
+                        </button>
+                    </form>
                 </div>
             }
         }
