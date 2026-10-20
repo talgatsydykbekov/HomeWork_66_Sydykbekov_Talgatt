@@ -107,6 +107,7 @@ public class ResumeController : Controller
             .AsNoTracking()
             .Include(r => r.Category)
             .Include(r => r.WorkExperiences)
+            .Include(r => r.Educations)
             .FirstOrDefaultAsync(r =>
                 r.Id == id &&
                 r.ApplicantId == user.Id);

@@ -136,6 +136,50 @@
                 </div>
             }
         }
+        <div>
+            <h3 class="mt-4">Образование и курсы</h3>
+
+            <a asp-controller="Education"
+               asp-action="Create"
+               asp-route-resumeId="@Model.Id"
+               class="btn btn-outline-primary mb-3">
+                Добавить образование или курс
+            </a>
+
+            @if (Model.Educations.Count == 0)
+            {
+                <p>Образование и курсы пока не указаны.</p>
+            }
+            else
+            {
+                @foreach (var education in Model.Educations
+                                  .OrderByDescending(e => e.StartYear)
+                                  .ThenByDescending(e => e.Id))
+                {
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <p>
+                                @(education.IsCourse
+                                    ? "Курс / повышение квалификации"
+                                    : "Образование")
+                            </p>
+
+                            <h5 class="text-break">@education.Program</h5>
+
+                            <p class="text-break">
+                                @education.InstitutionName
+                            </p>
+
+                            <p>
+                                @education.StartYear —
+                                @(education.EndYear?.ToString()
+                                      ?? "по настоящее время")
+                            </p>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
     </div>
 
     <a asp-controller="User"
