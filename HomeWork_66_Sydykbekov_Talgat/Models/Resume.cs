@@ -48,4 +48,7 @@ public class Resume
     
     public ICollection<WorkExperience> WorkExperiences { get; set; }
         = new List<WorkExperience>();
+    
+    public ICollection<Education> Educations { get; set; }
+        = new List<Education>();
 }

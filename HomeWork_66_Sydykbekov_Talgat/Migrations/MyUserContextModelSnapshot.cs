@@ -39,6 +39,43 @@ namespace HomeWork_66_Sydykbekov_Talgat.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.Education", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("EndYear")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("InstitutionName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<bool>("IsCourse")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Program")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("ResumeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResumeId");
+
+                    b.ToTable("Educations");
+                });
+
             modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.MyUser", b =>
                 {
                     b.Property<int>("Id")
@@ -341,6 +378,17 @@ namespace HomeWork_66_Sydykbekov_Talgat.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.Education", b =>
+                {
+                    b.HasOne("HomeWork_66_Sydykbekov_Talgat.Models.Resume", "Resume")
+                        .WithMany("Educations")
+                        .HasForeignKey("ResumeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Resume");
+                });
+
             modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.Resume", b =>
                 {
                     b.HasOne("HomeWork_66_Sydykbekov_Talgat.Models.MyUser", "Applicant")
@@ -424,6 +472,8 @@ namespace HomeWork_66_Sydykbekov_Talgat.Migrations
 
             modelBuilder.Entity("HomeWork_66_Sydykbekov_Talgat.Models.Resume", b =>
                 {
+                    b.Navigation("Educations");
+
                     b.Navigation("WorkExperiences");
                 });
 #pragma warning restore 612, 618
