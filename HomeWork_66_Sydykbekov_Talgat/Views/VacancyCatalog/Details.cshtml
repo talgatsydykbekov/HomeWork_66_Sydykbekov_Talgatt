@@ -4,6 +4,9 @@
 
 @{
     ViewData["Title"] = Model.Title;
+    var myResumes =
+        ViewData["ResumeOptions"] as List<SelectListItem>
+        ?? new List<SelectListItem>();
 }
 
 <div class="container mt-4">
@@ -57,7 +60,90 @@
                  style="white-space: pre-wrap;">@Model.Description</div>
         </div>
     </div>
+    <div>
+        @if (User.IsInRole("User"))
+        {
+            @if (myResumes.Count == 0)
+            {
+                <p class="mt-3">
+                    Чтобы откликнуться, сначала создайте резюме.
+                </p>
 
+                <a asp-controller="Resume"
+                   asp-action="Create"
+                   class="btn btn-primary">
+                    Создать резюме
+                </a>
+            }
+            else
+            {
+                <button type="button"
+                        class="btn btn-success mt-3"
+                        data-bs-toggle="modal"
+                        data-bs-target="#applyModal">
+                    Откликнуться
+                </button>
+
+                <div class="modal fade"
+                     id="applyModal"
+                     tabindex="-1"
+                     aria-labelledby="applyModalTitle"
+                     aria-hidden="true">
+
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form asp-controller="JobApplication"
+                                  asp-action="Create"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="vacancyId"
+                                       value="@Model.Id" />
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="applyModalTitle">
+                                        Отклик на вакансию
+                                    </h5>
+
+                                    <button type="button"
+                                            class="btn-close"
+                                            data-bs-dismiss="modal"
+                                            aria-label="Закрыть">
+                                    </button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <label for="applyResume" class="form-label">
+                                        Выберите резюме
+                                    </label>
+
+                                    <select id="applyResume"
+                                            name="resumeId"
+                                            asp-items="myResumes"
+                                            class="form-select"
+                                            required>
+                                        <option value="">Выберите резюме</option>
+                                    </select>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button"
+                                            class="btn btn-secondary"
+                                            data-bs-dismiss="modal">
+                                        Отмена
+                                    </button>
+
+                                    <button type="submit" class="btn btn-success">
+                                        Отправить отклик
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
     <a asp-controller="VacancyCatalog"
        asp-action="Index"
        class="btn btn-secondary mt-3">
