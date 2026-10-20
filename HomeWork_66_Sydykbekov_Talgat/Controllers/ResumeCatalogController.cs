@@ -1,6 +1,7 @@
 ﻿using HomeWork_66_Sydykbekov_Talgat.Models;
 using HomeWork_66_Sydykbekov_Talgat.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +11,12 @@ namespace HomeWork_66_Sydykbekov_Talgat.Controllers;
 public class ResumeCatalogController : Controller
 {
     private readonly MyUserContext _context;
+    private readonly UserManager<MyUser> _userManager;
 
-    public ResumeCatalogController(MyUserContext context)
+    public ResumeCatalogController(MyUserContext context, UserManager<MyUser> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }
 
     [HttpGet]
@@ -74,6 +77,11 @@ public class ResumeCatalogController : Controller
     [HttpGet]
     public async Task<IActionResult> Details(int? id)
     {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return Challenge();
+        }
         var resume = await _context.Resumes
             .AsNoTracking()
             .Include(r => r.Category)
@@ -86,6 +94,20 @@ public class ResumeCatalogController : Controller
         {
             return NotFound();
         }
+        var vacancies = await _context.Vacancies
+            .AsNoTracking()
+            .Where(v =>
+                v.EmployerId == user.Id &&
+                v.IsPublished)
+            .OrderBy(v => v.Title)
+            .Select(v => new SelectListItem
+            {
+                Value = v.Id.ToString(),
+                Text = v.Title
+            })
+            .ToListAsync();
+
+        ViewData["VacancyOptions"] = vacancies;
         return View(resume);
     }
 }

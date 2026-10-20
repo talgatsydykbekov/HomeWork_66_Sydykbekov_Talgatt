@@ -129,7 +129,88 @@
             </div>
         }
     }
+    @if (ViewData["VacancyOptions"] is List<SelectListItem> myVacancies)
+    {
+        @if (myVacancies.Count == 0)
+        {
+            <p class="mt-3">
+                Чтобы начать переписку, создайте и опубликуйте вакансию.
+            </p>
 
+            <a asp-controller="User"
+               asp-action="Index"
+               class="btn btn-primary">
+                Мои вакансии
+            </a>
+        }
+        else
+        {
+            <button type="button"
+                    class="btn btn-success mt-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#startChatModal">
+                Начать переписку
+            </button>
+
+            <div class="modal fade"
+                 id="startChatModal"
+                 tabindex="-1"
+                 aria-labelledby="startChatTitle"
+                 aria-hidden="true">
+
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form asp-controller="EmployerApplication"
+                              asp-action="Start"
+                              method="post">
+
+                            <input type="hidden"
+                                   name="resumeId"
+                                   value="@Model.Id" />
+
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="startChatTitle">
+                                    Выберите вакансию для обсуждения
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Закрыть">
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+                                <label for="chatVacancy" class="form-label">
+                                    Ваша вакансия
+                                </label>
+
+                                <select id="chatVacancy"
+                                        name="vacancyId"
+                                        asp-items="myVacancies"
+                                        class="form-select"
+                                        required>
+                                    <option value="">Выберите вакансию</option>
+                                </select>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                    Отмена
+                                </button>
+
+                                <button type="submit" class="btn btn-success">
+                                    Открыть переписку
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    }
     <a asp-controller="ResumeCatalog"
        asp-action="Index"
        class="btn btn-secondary mt-3">
